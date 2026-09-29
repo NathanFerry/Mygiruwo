@@ -8,4 +8,4 @@ new-package name:
     git switch -c "pkg/{{name}}" main
     cargo new --lib --vcs none crates/"{{name}}"
     git add . && git commit -m "Add my_package"
-    git push -u origin pkg/my_package
+    git push -u origin pkg/"{{name}}"
