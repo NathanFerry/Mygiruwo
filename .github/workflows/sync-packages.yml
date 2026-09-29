@@ -1,0 +1,24 @@
+name: Sync package branches
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fast-forward package branches
+        run: |
+          for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin/pkg/); do
+            b=${ref#origin/}
+            # only if the package branch is already fully contained in main
+            if git merge-base --is-ancestor "$ref" HEAD; then
+              git push origin HEAD:refs/heads/"$b"
+            fi
+          done
